@@ -1,0 +1,786 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Weekly Report AI Bot</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #ffffff;
+      --panel: #ffffff;
+      --panel-2: #f5f5f5;
+      --text: #333333;
+      --muted: #5c5c5c;
+      --line: #d6d6d6;
+      --accent: #007f6d;
+      --accent-2: #08c;
+      --warn: #a86500;
+      --shadow: 0 10px 28px rgba(0, 0, 0, .08);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, "Microsoft JhengHei", sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      letter-spacing: 0;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    aside {
+      border-right: 1px solid var(--line);
+      background: #f8faf9;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .mark {
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line);
+      background: var(--panel-2);
+      color: var(--accent);
+      border-radius: 8px;
+      font-weight: 800;
+    }
+
+    .status {
+      display: grid;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .control-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    input[type="number"], input[type="text"] {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 9px 10px;
+      font: inherit;
+      background: var(--panel);
+      color: var(--text);
+    }
+
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+    }
+
+    main {
+      min-width: 0;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      height: 100vh;
+    }
+
+    header {
+      border-bottom: 1px solid var(--line);
+      background: rgba(246, 247, 244, .92);
+      padding: 16px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.3;
+    }
+
+    .sub {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 2px;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    button {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--text);
+      min-height: 38px;
+      border-radius: 8px;
+      padding: 0 12px;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+      min-width: 84px;
+    }
+
+    button:disabled {
+      cursor: wait;
+      opacity: .7;
+    }
+
+    .chat {
+      overflow: auto;
+      padding: 28px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .message {
+      max-width: 914px;
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      padding: 22px 28px;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+
+    .message.user {
+      align-self: flex-end;
+      background: #e9f1ff;
+      border-color: #cad9ef;
+      box-shadow: none;
+      max-width: 780px;
+      width: fit-content;
+      white-space: pre-wrap;
+    }
+
+    .message.loading {
+      color: var(--muted);
+    }
+
+    .markdown {
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .markdown h1,
+    .markdown h2,
+    .markdown h3 {
+      margin: 4px 0 2px;
+      line-height: 1.2;
+      font-weight: 600;
+      color: #000;
+    }
+
+    .markdown h1 { font-size: 2.0em; padding-bottom: .25em; }
+    .markdown h2 { font-size: 1.45em; padding-bottom: .2em; }
+    .markdown h3 { font-size: 1.2em; }
+
+    .markdown p {
+      margin: 0 0 16px;
+    }
+
+    .markdown ul,
+    .markdown ol {
+      margin: 0 0 16px;
+      padding-left: 2em;
+    }
+
+    .markdown li {
+      margin-bottom: 4px;
+      padding-left: 2px;
+    }
+
+    .markdown code {
+      background: #f0f0f0;
+      border-radius: 3px;
+      color: #000;
+      padding: .15em .35em;
+      font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+      font-size: .85em;
+    }
+
+    .markdown pre {
+      margin: 0 0 16px;
+      max-width: 100%;
+      overflow: auto;
+      border-radius: 3px;
+      background: #f5f5f5;
+      color: #333;
+      padding: 1em;
+      line-height: 1.45;
+    }
+
+    .markdown pre code {
+      border: 0;
+      background: transparent;
+      padding: 0;
+      color: inherit;
+    }
+
+    .markdown strong {
+      font-weight: 700;
+      color: #000;
+    }
+
+    .meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .chip {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 2px 8px;
+      background: #f8faf9;
+    }
+
+    .sources {
+      margin-top: 18px;
+      display: grid;
+      gap: 8px;
+    }
+
+    details {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcfa;
+      padding: 8px 10px;
+    }
+
+    summary {
+      cursor: pointer;
+      color: var(--accent-2);
+      font-weight: 650;
+    }
+
+    .snippet {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .source-body {
+      margin-top: 12px;
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+    }
+
+    .source-body .markdown {
+      font-size: 15px;
+    }
+
+    .hint {
+      margin-top: -2px;
+      font-size: 12px;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    form {
+      border-top: 1px solid var(--line);
+      background: #fbfcfa;
+      padding: 14px 22px 18px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 54px;
+      max-height: 180px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      font: inherit;
+      line-height: 1.5;
+      color: var(--text);
+      background: var(--panel);
+    }
+
+    .examples {
+      display: grid;
+      gap: 8px;
+    }
+
+    .example {
+      width: 100%;
+      text-align: left;
+      min-height: 0;
+      padding: 9px 10px;
+      line-height: 1.35;
+      color: var(--accent-2);
+      background: #f7fafc;
+    }
+
+    .notice {
+      color: var(--warn);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .key-panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      padding: 10px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .key-panel input {
+      width: 100%;
+    }
+
+    .key-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .key-actions button {
+      flex: 1;
+      min-height: 34px;
+      padding: 0 8px;
+      font-size: 13px;
+    }
+
+    .warning {
+      border: 1px solid #e2bd75;
+      background: #fff8e8;
+      color: #7a4d00;
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 860px) {
+      .app { grid-template-columns: 1fr; }
+      aside {
+        display: none;
+      }
+      main { height: 100vh; }
+      header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+      form {
+        grid-template-columns: 1fr;
+      }
+      button.primary {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside>
+      <div class="brand"><div class="mark">W</div><span>Weekly AI Bot</span></div>
+      <div class="status" id="status">載入索引狀態中...</div>
+
+      <div>
+        <div class="control-row">
+          <label for="llm">OpenAI 整理</label>
+          <input id="llm" type="checkbox">
+        </div>
+        <div class="notice">沒有 key 也能查週報；設定 key 後可讓 OpenAI 把週報證據整理成完整回答。</div>
+      </div>
+
+      <div class="key-panel" id="keyPanel" hidden>
+        <div class="notice">未設定 key 時仍可查週報；設定後才會啟用 OpenAI 整理。</div>
+        <input id="apiKeyInput" type="password" placeholder="貼上 OpenAI API key">
+        <div class="key-actions">
+          <button id="saveKeyBtn" type="button">儲存 key</button>
+          <button id="hideKeyBtn" type="button">稍後</button>
+        </div>
+      </div>
+
+      <div class="examples">
+        <button class="example" data-q="Y26W24 DownloadKey fail 的可能原因和處理方向？">Y26W24 DownloadKey fail 的可能原因？</button>
+        <button class="example" data-q="OX03G10 最近有哪些進展？">OX03G10 最近有哪些進展？</button>
+        <button class="example" data-q="請整理 Crypto Key Provisioning 在 CP/FT 的風險與下一步">整理 CP/FT key provisioning 風險</button>
+      </div>
+    </aside>
+
+    <main>
+      <header>
+        <div>
+          <h1>週報對話查詢</h1>
+          <div class="sub">回答會優先根據週報，並附上 WxxYxx、日期與行號。</div>
+        </div>
+        <div class="toolbar">
+          <button id="clearBtn" type="button">清空</button>
+        </div>
+      </header>
+
+      <section class="chat" id="chat">
+        <div class="message">
+          <div class="meta"><span class="chip">local RAG</span><span class="chip">引用週報</span></div>
+          <div class="markdown">
+            <p>直接輸入你想問的問題。建議問題中包含產品代號、function 名稱、issue 關鍵字或週別，例如 <code>Y26W24</code>、<code>DownloadKey</code>、<code>BIN7</code>、<code>OX03G10</code>。</p>
+            <p>系統會自動決定要從週報資料庫抓幾個相關片段，主回答保持乾淨，細節放在下方引用來源。</p>
+          </div>
+        </div>
+      </section>
+
+      <form id="askForm">
+        <textarea id="question" placeholder="輸入問題，例如：X3HECO2 FT DownloadKey fail 後來怎麼處理？"></textarea>
+        <button class="primary" id="sendBtn" type="submit">送出</button>
+      </form>
+    </main>
+  </div>
+
+  <script>
+    const chat = document.querySelector("#chat");
+    const form = document.querySelector("#askForm");
+    const question = document.querySelector("#question");
+    const sendBtn = document.querySelector("#sendBtn");
+    const clearBtn = document.querySelector("#clearBtn");
+    const statusBox = document.querySelector("#status");
+    const keyPanel = document.querySelector("#keyPanel");
+    const apiKeyInput = document.querySelector("#apiKeyInput");
+    const saveKeyBtn = document.querySelector("#saveKeyBtn");
+    const hideKeyBtn = document.querySelector("#hideKeyBtn");
+    let hasOpenAiKey = false;
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function inlineMarkdown(value) {
+      return value
+        .replace(/`([^`]+)`/g, "<code>$1</code>")
+        .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    }
+
+    function renderMarkdown(markdown) {
+      const codeBlocks = [];
+      let text = String(markdown || "").replace(/\r\n/g, "\n");
+      text = text.replace(/```(\w+)?\n([\s\S]*?)```/g, (_, lang, code) => {
+        const token = `@@CODEBLOCK${codeBlocks.length}@@`;
+        codeBlocks.push(`<pre><code>${escapeHtml(code.trim())}</code></pre>`);
+        return token;
+      });
+
+      const lines = escapeHtml(text).split("\n");
+      const html = [];
+      let list = null;
+      let paragraph = [];
+
+      function closeParagraph() {
+        if (!paragraph.length) return;
+        html.push(`<p>${inlineMarkdown(paragraph.join(" "))}</p>`);
+        paragraph = [];
+      }
+
+      function closeList() {
+        if (!list) return;
+        html.push(`</${list}>`);
+        list = null;
+      }
+
+      for (const rawLine of lines) {
+        const line = rawLine.trimEnd();
+        const trimmed = line.trim();
+        if (!trimmed) {
+          closeParagraph();
+          closeList();
+          continue;
+        }
+        if (/^@@CODEBLOCK\d+@@$/.test(trimmed)) {
+          closeParagraph();
+          closeList();
+          html.push(trimmed);
+          continue;
+        }
+        const heading = trimmed.match(/^(#{1,3})\s+(.+)$/);
+        if (heading) {
+          closeParagraph();
+          closeList();
+          const level = heading[1].length;
+          html.push(`<h${level}>${inlineMarkdown(heading[2])}</h${level}>`);
+          continue;
+        }
+        const bullet = trimmed.match(/^[-*]\s+(.+)$/);
+        if (bullet) {
+          closeParagraph();
+          if (list !== "ul") {
+            closeList();
+            list = "ul";
+            html.push("<ul>");
+          }
+          html.push(`<li>${inlineMarkdown(bullet[1])}</li>`);
+          continue;
+        }
+        const ordered = trimmed.match(/^\d+\.\s+(.+)$/);
+        if (ordered) {
+          closeParagraph();
+          if (list !== "ol") {
+            closeList();
+            list = "ol";
+            html.push("<ol>");
+          }
+          html.push(`<li>${inlineMarkdown(ordered[1])}</li>`);
+          continue;
+        }
+        closeList();
+        paragraph.push(trimmed);
+      }
+
+      closeParagraph();
+      closeList();
+      let rendered = html.join("");
+      codeBlocks.forEach((block, index) => {
+        rendered = rendered.replace(`@@CODEBLOCK${index}@@`, block);
+      });
+      return `<div class="markdown">${rendered}</div>`;
+    }
+
+    function addMessage(role, text, payload) {
+      const node = document.createElement("div");
+      node.className = `message ${role}`;
+      if (payload?.loading) node.classList.add("loading");
+      const mode = payload?.mode ? `<div class="meta"><span class="chip">${escapeHtml(payload.mode)}</span></div>` : "";
+      const sources = payload?.sources?.length ? renderSources(payload.sources) : "";
+      const warning = payload?.warning ? `<div class="warning">${escapeHtml(payload.warning)}</div>` : "";
+      const body = role === "assistant" ? renderMarkdown(text) : escapeHtml(text);
+      node.innerHTML = `${mode}${warning}${body}${sources}`;
+      chat.appendChild(node);
+      chat.scrollTop = chat.scrollHeight;
+      return node;
+    }
+
+    function renderSources(sources) {
+      return `<div class="sources">${sources.map((item) => `
+        <details>
+          <summary>${escapeHtml(item.raw_week)} / ${escapeHtml(item.date || "no date")} / line ${escapeHtml(item.line)}</summary>
+          <div class="source-body">${renderMarkdown(cleanSourceSnippet(item.snippet || ""))}</div>
+        </details>
+      `).join("")}</div>`;
+    }
+
+    function cleanSourceSnippet(value) {
+      return String(value || "")
+        .replace(/<!--[\s\S]*?-->/g, "")
+        .replaceAll("```MarkDown", "")
+        .replaceAll("```Markdown", "")
+        .replaceAll("```markdown", "")
+        .replaceAll("```", "")
+        .replace(/######\s*tags:[^\n]+/g, "")
+        .replace(/<br\s*\/?>/gi, "\n")
+        .replace(/<font[^>]*>[\s\S]*?<\/font>/gi, "")
+        .replace(/\.{0,3}\s*img\s+src=[^\n]+/gi, "")
+        .replace(/\.{0,3}\s*src=[^\n]+/gi, "")
+        .replace(/<[^>]*>/g, "")
+        .replace(/!\[[^\]]*]\([^)]*\)/g, "")
+        .replace(/:carousel_horse:/g, "")
+        .replace(/:dart:/g, "")
+        .replace(/:ballot_box_with_check:/g, "")
+        .replace(/-{8,}/g, "")
+        .replace(/\s+\*\*/g, "\n\n**")
+        .replace(/\s+\*\s+/g, "\n- ")
+        .replace(/\s+(\d+)\.\s+/g, "\n$1. ")
+        .replace(/\n{3,}/g, "\n\n")
+        .trim();
+    }
+
+    function buildLocalAnswer(data) {
+      const sources = data.sources || [];
+      if (!sources.length) return data.answer || "週報證據不足：找不到相關內容。";
+      const top = sources.slice(0, 5).map((item) =>
+        `- ${item.raw_week}：${item.date || "no date"}，line ${item.line}，相關度 ${item.score}`
+      ).join("\n");
+      return [
+        "## 週報回答",
+        "",
+        "我找到以下幾個最相關的週報位置。主回答先保持保守，完整片段放在下方引用來源中。",
+        "",
+        top,
+        "",
+        "## Agent 補充觀點",
+        "",
+        "目前是本機檢索模式。若要自動整理成完整結論，請設定 OpenAI key 後啟用 OpenAI 整理。",
+      ].join("\n");
+    }
+
+    async function loadStatus() {
+      if (location.protocol === "file:") {
+        statusBox.innerHTML = `
+          <div><strong>請改用本機網址</strong><br>http://127.0.0.1:8765</div>
+          <div>直接開 index.html 無法呼叫後端 API，所以會 Failed to fetch。</div>
+        `;
+        return;
+      }
+      try {
+        const res = await fetch("/api/status");
+        const data = await res.json();
+        const cfg = data.config || {};
+        hasOpenAiKey = Boolean(data.has_openai_key);
+        statusBox.innerHTML = `
+          <div><strong>索引片段</strong><br>${escapeHtml(cfg.chunk_count || 0)}</div>
+          <div><strong>最後更新</strong><br>${escapeHtml(cfg.last_indexed_at || "unknown")}</div>
+          <div><strong>OpenAI Key</strong><br>${hasOpenAiKey ? `已設定 (${escapeHtml(data.openai_key_masked || "masked")})` : "未設定"}</div>
+          <div><strong>資料來源</strong><br>${escapeHtml(cfg.master_source || "not initialized")}</div>
+        `;
+        if (!hasOpenAiKey) {
+          keyPanel.hidden = false;
+        }
+      } catch (err) {
+        statusBox.textContent = `狀態讀取失敗：${err.message}`;
+      }
+    }
+
+    async function saveOpenAiKey() {
+      const apiKey = apiKeyInput.value.trim();
+      if (!apiKey) {
+        addMessage("assistant", "請先貼上 OpenAI API key。它通常會以 `sk-` 開頭。");
+        return;
+      }
+      saveKeyBtn.disabled = true;
+      try {
+        const res = await fetch("/api/openai-key", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ api_key: apiKey })
+        });
+        const data = await res.json();
+        if (!data.ok) throw new Error(data.error || "儲存失敗");
+        apiKeyInput.value = "";
+        keyPanel.hidden = true;
+        hasOpenAiKey = true;
+        await loadStatus();
+        addMessage("assistant", "OpenAI API key 已儲存到本機專案設定。現在可以勾選 OpenAI 整理後提問。");
+      } catch (err) {
+        addMessage("assistant", `API key 設定失敗：${err.message}`);
+      } finally {
+        saveKeyBtn.disabled = false;
+      }
+    }
+
+    async function ask() {
+      const q = question.value.trim();
+      if (!q) return;
+      if (location.protocol === "file:") {
+        addMessage("assistant", "請先啟動 `python weekly_agent.py web`，並打開 `http://127.0.0.1:8765`。直接開 HTML 檔沒有後端 API，無法查詢週報。");
+        return;
+      }
+      addMessage("user", q);
+      question.value = "";
+      sendBtn.disabled = true;
+      const loading = addMessage("assistant", "查詢週報中...", { loading: true });
+      try {
+        const res = await fetch("/api/ask", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            question: q,
+            llm: document.querySelector("#llm").checked,
+            web: false
+          })
+        });
+        const data = await res.json();
+        if (!data.ok) throw new Error(data.error || "查詢失敗");
+        loading.remove();
+        const answer = data.mode === "local" ? buildLocalAnswer(data) : data.answer;
+        addMessage("assistant", answer, { mode: data.mode, sources: data.sources, warning: data.warning });
+        if (data.warning && !hasOpenAiKey) keyPanel.hidden = false;
+      } catch (err) {
+        loading.remove();
+        addMessage("assistant", `查詢失敗：${err.message}`);
+      } finally {
+        sendBtn.disabled = false;
+        question.focus();
+      }
+    }
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      ask();
+    });
+
+    question.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        ask();
+      }
+    });
+
+    clearBtn.addEventListener("click", () => {
+      chat.innerHTML = "";
+      question.focus();
+    });
+
+    saveKeyBtn.addEventListener("click", saveOpenAiKey);
+    hideKeyBtn.addEventListener("click", () => {
+      keyPanel.hidden = true;
+      addMessage("assistant", "沒問題。未設定 OpenAI key 時，系統仍會使用週報本機檢索回答；只是 OpenAI 整理不會啟用。");
+    });
+
+    document.querySelectorAll("[data-q]").forEach((button) => {
+      button.addEventListener("click", () => {
+        question.value = button.dataset.q;
+        question.focus();
+      });
+    });
+
+    loadStatus();
+    question.focus();
+  </script>
+</body>
+</html>

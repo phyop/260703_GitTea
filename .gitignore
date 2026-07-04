@@ -1,0 +1,10 @@
+.weekly_agent/
+__pycache__/
+*.pyc
+.env
+.codex-remote-attachments/
+.idea/
+.vs/
+node_modules/
+credentials.json
+*.log
