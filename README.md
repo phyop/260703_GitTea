@@ -160,7 +160,7 @@ The article version is kept in:
 
 Published Medium article:
 
-- [From Optical Engineer to Software Engineer: The First Time I Understood Git Through Gitea](https://medium.com/@seek1andfind2/from-optical-engineer-to-software-engineer-the-first-time-i-truly-understood-git-d80175b1b839)
+- [From Optical Engineer to Software Engineer: The First Time I Understood Git Through Gitea](https://medium.com/p/d80175b1b839)
 
 ## Project Isolation
 
