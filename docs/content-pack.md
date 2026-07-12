@@ -62,8 +62,8 @@ The model that helped:
 - Local Repository = history on my machine
 - Remote Repository = shared history for the team
 
-`git add` selects a version.  
-`git commit` writes local history.  
+`git add` selects a version.
+`git commit` writes local history.
 `git push` shares that history.
 
 Git is not only saving files. Git preserves the team's ability to restart work.
