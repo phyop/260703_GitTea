@@ -135,7 +135,7 @@ Clone the repository:
 
 ```bash
 git clone <repository-url>
-cd 260703_GitTea
+cd GitTea
 ```
 
 Review the learning content:
@@ -220,6 +220,6 @@ Published Medium article:
 
 ## Project Isolation
 
-This repository belongs only to the `260703_GitTea` project.
+This repository belongs only to the `GitTea` project.
 
 It should not contain files, notes, images, scripts, TODOs, or Git history from other projects.

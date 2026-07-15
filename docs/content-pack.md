@@ -49,7 +49,7 @@ That changed Git from a fragile black box into an engineering system for history
 
 I turned the learning process into a public README, article, and diagram set here:
 
-`https://github.com/phyop/260703_GitTea`
+`https://github.com/phyop/GitTea`
 
 ## Short LinkedIn Version
 
@@ -103,7 +103,7 @@ Refresh Git mental model public content
 
 - Verified Markdown references to generated image assets.
 - Checked that the Medium draft remains within the requested long-form article range.
-- Confirmed the project remains isolated to `260703_GitTea`.
+- Confirmed the project remains isolated to `GitTea`.
 
 ## Future Extensions
 
