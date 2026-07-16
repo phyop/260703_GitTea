@@ -1,49 +1,5 @@
 # From Optical Engineer to Software Engineer: The First Time I Understood Git Through Gitea
 
-## Title Options
-
-1. From Optical Engineer to Software Engineer: The First Time I Understood Git Through Gitea
-2. Git Finally Made Sense When I Stopped Treating It Like a Save Button
-3. The Git Mental Model That Helped Me Move From Commands to Engineering Judgment
-4. Working Tree, Staging Area, Local, Remote: How I Finally Understood Git
-5. What Gitea Taught Me About Git, History, and Restartable Software Work
-6. Why Git Is Not Just Saving Code: A Practical Mental Model for New Engineers
-
-## SEO
-
-**Meta description:** A practical Git mental model for new software engineers, explained through a real Gitea learning journey from optical engineering to software development.
-
-**SEO keywords:** Git mental model, Gitea tutorial, learn Git, Working Tree, Staging Area, Local Repository, Remote Repository, git add, git commit, git push, merge conflict, .gitignore, source versus generated output, software engineering workflow
-
-## Tags
-
-Git, Gitea, Software Engineering, Version Control, Developer Journey, Learning In Public, AI Assisted Learning, Career Change
-
-![Git mental model: Working Tree, Staging Area, Local Repository, and Remote Repository.](medium-assets/git-mental-model-01.png)
-
-I used to be an optical engineer.
-
-That background trained me to care about systems, precision, root causes, and measurement. But when I started moving into software engineering, I realized that software had its own operating system of habits. I was not only learning Python. I was learning Ubuntu, compilers, package managers, repositories, branches, remotes, merge conflicts, and the daily rhythm of engineering work.
-
-Git was one of the hardest parts.
-
-At first, I knew the words:
-
-```bash
-git add
-git commit
-git push
-git pull
-```
-
-But knowing the words was not the same as understanding the system. I could follow instructions, but I did not understand what each command really changed. When something worked, I moved on. When something failed, especially around remote repositories or merge conflicts, Git felt like a fragile black box.
-
-That changed during a real project where I created a repository in Gitea and pushed code into it. For the first time, I was not only typing commands. I was seeing the structure behind them.
-
-This article is not a Git command cheat sheet. It is the story of how I moved from memorizing commands to understanding Git as a system for organizing software work.
-
-## Background: I Thought Git Was Just Saving Code
-
 When I first learned Git, I thought its purpose was to save code.
 
 That is not completely wrong, but it is too small.
@@ -300,4 +256,3 @@ Git supports that by making work traceable, reviewable, recoverable, and shareab
 I no longer see Git as a dangerous list of commands. I see it as a design for managing history.
 
 The commands did not change. My mental model did.
-
